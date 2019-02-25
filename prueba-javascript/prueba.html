@@ -1,0 +1,419 @@
+<head>
+    <title>Jaime Llanos</title>
+    <meta http-equiv="Content-Language" content="es">
+</head>
+<body>
+    <script type="text/javascript">
+        const clients = [{
+            id: 1,
+            taxNumber: '86620855',
+            name: 'HECTOR ACUÑA BOLAÑOS'
+        },
+        {
+            id: 2,
+            taxNumber: '7317855K',
+            name: 'JESUS RODRIGUEZ ALVAREZ'
+        },
+        {
+            id: 3,
+            taxNumber: '73826497',
+            name: 'ANDRES NADAL MOLINA'
+        },
+        {
+            id: 4,
+            taxNumber: '88587715',
+            name: 'SALVADOR ARNEDO MANRIQUEZ'
+        },
+        {
+            id: 5,
+            taxNumber: '94020190',
+            name: 'VICTOR MANUEL ROJAS LUCAS'
+        },
+        {
+            id: 6,
+            taxNumber: '99804238',
+            name: 'MOHAMED FERRE SAMPER'
+        }
+    ];
+    const accounts = [{
+            clientId: 6,
+            bankId: 1,
+            balance: 15000
+        },
+        {
+            clientId: 1,
+            bankId: 3,
+            balance: 18000
+        },
+        {
+            clientId: 5,
+            bankId: 3,
+            balance: 135000
+        },
+        {
+            clientId: 2,
+            bankId: 2,
+            balance: 5600
+        },
+        {
+            clientId: 3,
+            bankId: 1,
+            balance: 23000
+        },
+        {
+            clientId: 5,
+            bankId: 2,
+            balance: 15000
+        },
+        {
+            clientId: 3,
+            bankId: 3,
+            balance: 45900
+        },
+        {
+            clientId: 2,
+            bankId: 3,
+            balance: 19000
+        },
+        {
+            clientId: 4,
+            bankId: 3,
+            balance: 51000
+        },
+        {
+            clientId: 5,
+            bankId: 1,
+            balance: 89000
+        },
+        {
+            clientId: 1,
+            bankId: 2,
+            balance: 1600
+        },
+        {
+            clientId: 5,
+            bankId: 3,
+            balance: 37500
+        },
+        {
+            clientId: 6,
+            bankId: 1,
+            balance: 19200
+        },
+        {
+            clientId: 2,
+            bankId: 3,
+            balance: 10000
+        },
+        {
+            clientId: 3,
+            bankId: 2,
+            balance: 5400
+        },
+        {
+            clientId: 3,
+            bankId: 1,
+            balance: 9000
+        },
+        {
+            clientId: 4,
+            bankId: 3,
+            balance: 13500
+        },
+        {
+            clientId: 2,
+            bankId: 1,
+            balance: 38200
+        },
+        {
+            clientId: 5,
+            bankId: 2,
+            balance: 17000
+        },
+        {
+            clientId: 1,
+            bankId: 3,
+            balance: 1000
+        },
+        {
+            clientId: 5,
+            bankId: 2,
+            balance: 600
+        },
+        {
+            clientId: 6,
+            bankId: 1,
+            balance: 16200
+        },
+        {
+            clientId: 2,
+            bankId: 2,
+            balance: 10000
+        }
+    ]
+    const banks = [{
+            id: 1,
+            name: 'SANTANDER'
+        },
+        {
+            id: 2,
+            name: 'CHILE'
+        },
+        {
+            id: 3,
+            name: 'ESTADO'
+        }
+    ];
+
+    function listClientsIds() {
+        return clients;
+    }
+
+    function listClientsIdsSortByTaxNumber() {
+        let clientSortedByTaxNumber = [],
+            clientIndex = 0;
+
+        clients.forEach(function(client) {
+            clientSortedByTaxNumber.forEach(function(sorted) {
+                if (sorted.taxNumber < client.taxNumber) {
+                    clientIndex++;
+                }
+            });
+
+            clientSortedByTaxNumber.splice(clientIndex, 0, client);
+            clientSortedByTaxNumber.join();
+        });
+
+        return clientSortedByTaxNumber;
+    }
+
+    function sortClientsTotalBalances() {
+        let clientsNames = [],
+            clientBalances = [];
+
+        clients.forEach(function(client) {
+            let clientBalanceSum = 0,
+                clientBalanceIndex = 0;
+
+            accounts.forEach(function(account) {
+                if (account.clientId === client.id) {
+                    clientBalanceSum += account.balance;
+                }
+            });
+
+            clientBalances.forEach(function(clientBalance) {
+                if (clientBalance.totalBalance < clientBalanceSum) {
+                    clientBalanceIndex++;
+                }
+            });
+            
+            clientBalances.splice(clientBalanceIndex, 0, {clientId: client.id, totalBalance: clientBalanceSum});
+        });
+
+        clientBalances.forEach(function(clientBalance) {
+            clients.forEach(function(client) {
+                if (client.id == clientBalance.clientId) {
+                    clientsNames.push(client.name);
+                }
+            })
+        });
+
+        return clientsNames;
+    }
+
+    function banksClientsTaxNumbers() {
+        let banksWithClients = [];
+
+        banks.forEach(function(bank) {
+            let clientNames = [],
+                addedClients = [];
+
+            accounts.forEach(function(account) {
+                let clientNameIndex = 0;
+
+                if (account.bankId === bank.id) {
+                    clients.forEach(function (client) {
+                        if (client.id === account.clientId) {
+                            clientNames.forEach(function(clientName) {
+                                if (clientName < client.name) {
+                                    clientNameIndex++;
+                                }
+                            });
+
+                            if (addedClients.indexOf(client.name) === -1) {
+                                clientNames.splice(clientNameIndex, 0, client.name);
+                            }
+
+                            addedClients.push(client.name);
+                        }
+                    });
+                }
+            });
+            banksWithClients[bank.name] = clientNames;
+        });
+        
+        return banksWithClients;
+    }
+
+    function richClientsBalances() {
+        let clientBalances = [],
+            richClientsSum = [];
+
+        accounts.forEach(function(account) {
+            let clientAlreadyExists = false;
+
+            if (account.bankId === 1) {
+                clientBalances.forEach(function(clientBalance) {
+                    if (account.clientId === clientBalance.clientId) {
+                        clientBalance.balance += account.balance;
+                        clientAlreadyExists = true;
+                    }
+                });
+
+                if (!clientAlreadyExists) {
+                    clientBalances.push({clientId: account.clientId, balance: account.balance});
+                }
+            }
+        });
+
+        clientBalances.forEach(function (clientBalance) {
+            richClientsIndex = 0;
+
+            if (clientBalance.balance > 25000) {
+                richClientsSum.forEach(function (sum) {
+                    if (sum > clientBalance.balance) {
+                        richClientsIndex++;
+                    }
+                });
+
+                richClientsSum.splice(richClientsIndex, 0, clientBalance.balance);
+            }
+        });
+
+        return richClientsSum;
+    }
+
+    function banksRankingByTotalBalance() {
+        let banksSums = [],
+            bankIds = [],
+            banksSumsIndex = 0;
+
+        banks.forEach(function (bank) {
+            let bankAlreadyExists = false;
+
+            accounts.forEach(function(account) {
+                if (bank.id === account.bankId) {
+                    banksSums.forEach(function (bankSums) {
+                        if (bankSums.id === bank.id) {
+                            bankSums.sum += account.balance;
+                            bankAlreadyExists = true;
+                        }
+                    });
+
+                    if (!bankAlreadyExists) {
+                        banksSums.push({id: bank.id, sum: account.balance});
+                    }
+                }
+            });
+
+            
+        });
+
+        banksSums.forEach(function(bankSum) {
+            banksSumsIndex = 0;
+            banksSums.forEach(function(bankSum2) {
+                if (bankSum.sum > bankSum2.sum) {
+                    banksSumsIndex++;
+                }
+            });
+
+            bankIds.splice(banksSumsIndex, 0, bankSum.id);
+        });
+
+        return bankIds;
+    }
+
+    function banksFidelity() {
+        let banksLoyalClients = [];
+
+        banks.forEach(function (bank) {
+            banksLoyalClients[bank.name] = 0;
+
+            clients.forEach(function(client) {
+                let clientFidelity = true;
+
+                accounts.forEach(function (account) {
+                    if (account.clientId === client.id) {
+                        if (account.bankId !== bank.id) {
+                            clientFidelity = false;
+                            return false;
+                        }
+                    }
+                });
+
+                if (clientFidelity) {
+                    banksLoyalClients[bank.name]++;
+                }
+            });
+        });
+
+        return banksLoyalClients;
+    }
+
+    function banksPoorClients() {
+        let banksPoorestClients = [];
+        
+        banks.forEach(function (bank) {
+            let poorestClientBalance = 0,
+                iteration = 0;
+
+            clients.forEach(function (client) {
+                let clientBalance = 0;
+                accounts.forEach(function(account) {
+                    if (client.id === account.clientId && bank.id === account.bankId) {
+                        clientBalance += account.balance;
+                    }
+                });
+
+                if (poorestClientBalance > clientBalance || iteration === 0) {
+                    banksPoorestClients[bank.name] = client.id;
+                    poorestClientBalance = clientBalance;
+                }
+
+                iteration++;
+            });
+        });
+
+        return banksPoorestClients;
+    }
+
+    function newClientRanking() {
+        clients.push({id: 7, taxNumber: '181268204', name: 'JAIME LLANOS MARTINEZ'});
+        accounts.push({clientId: 7, bankId: 3, balance: 9000});
+
+        const clientList = sortClientsTotalBalances();
+
+        return clientList.indexOf('JAIME LLANOS MARTINEZ');
+    }
+
+    console.log('Pregunta 0');
+    console.log(listClientsIds());
+    console.log('Pregunta 1');
+    console.log(listClientsIdsSortByTaxNumber());
+    console.log('Pregunta 2');
+    console.log(sortClientsTotalBalances());
+    console.log('Pregunta 3');
+    console.log(banksClientsTaxNumbers());
+    console.log('Pregunta 4');
+    console.log(richClientsBalances());
+    console.log('Pregunta 5');
+    console.log(banksRankingByTotalBalance());
+    console.log('Pregunta 6');
+    console.log(banksFidelity());
+    console.log('Pregunta 7');
+    console.log(banksPoorClients());
+    console.log('Pregunta 8');
+    console.log(newClientRanking());
+
+    </script>
+</body>
